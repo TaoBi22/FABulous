@@ -1,16 +1,16 @@
-/* Copyright 2021 University of Manchester
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
+// Copyright 2021 University of Manchester
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 module LUT4c_frame_config (I0, I1, I2, I3, O, Ci, Co, UserCLK, ConfigBits);
 	parameter NoConfigBits = 18 ; // has to be adjusted manually (we don't use an arithmetic parser for the value)
@@ -42,13 +42,20 @@ module LUT4c_frame_config (I0, I1, I2, I3, O, Ci, Co, UserCLK, ConfigBits);
 
 //CONFout <= c_I0mux;
 
-	assign I0mux = c_I0mux ? Ci : I0;;
+	//assign I0mux = c_I0mux ? Ci : I0;
+    my_mux2 my_mux2_I0mux(
+    .A0(I0),
+    .A1(Ci),
+    .S(c_I0mux),
+    .X(I0mux)
+    );
+
 	assign LUT_index = {I3,I2,I1,I0mux};
 
 // The LUT is just a multiplexer 
 // for a first shot, I am using a 16:1
 // LUT_out <= LUT_values(TO_INTEGER(LUT_index));
-	MUX16PTv2 inst_MUX16PTv2_E6BEG1(
+	/*MUX16PTv2 inst_MUX16PTv2_E6BEG1(
 	.IN1(LUT_values[0]),
 	.IN2(LUT_values[1]),
 	.IN3(LUT_values[2]),
@@ -70,9 +77,43 @@ module LUT4c_frame_config (I0, I1, I2, I3, O, Ci, Co, UserCLK, ConfigBits);
 	.S3(LUT_index[2]),
 	.S4(LUT_index[3]),
 	.O(LUT_out)
-	);
+	);*/
+    cus_mux161_buf inst_cus_mux161_buf(
+	.A0(LUT_values[0]),
+	.A1(LUT_values[1]),
+	.A2(LUT_values[2]),
+	.A3(LUT_values[3]),
+	.A4(LUT_values[4]),
+	.A5(LUT_values[5]),
+	.A6(LUT_values[6]),
+	.A7(LUT_values[7]),
+	.A8(LUT_values[8]),
+	.A9(LUT_values[9]),
+	.A10(LUT_values[10]),
+	.A11(LUT_values[11]),
+	.A12(LUT_values[12]),
+	.A13(LUT_values[13]),
+	.A14(LUT_values[14]),
+	.A15(LUT_values[15]),
+	.S0 (LUT_index[0]),
+	.S0N(~LUT_index[0]),
+	.S1 (LUT_index[1]),
+	.S1N(~LUT_index[1]),
+	.S2 (LUT_index[2]),
+	.S2N(~LUT_index[2]),
+	.S3 (LUT_index[3]),
+	.S3N(~LUT_index[3]),
+	.X  (LUT_out)
+    );
 
-	assign O = c_out_mux ? LUT_flop : LUT_out;
+	//assign O = c_out_mux ? LUT_flop : LUT_out;
+    my_mux2 my_mux2_O(
+    .A0(LUT_out),
+    .A1(LUT_flop),
+    .S(c_out_mux),
+    .X(O)
+    );
+
 	assign Co = (Ci & I1) | (Ci & I2) | (I1 & I2);// iCE40 like carry chain (as this is supported in Yosys; would normally go for fractured LUT
 
 	always @ (posedge UserCLK)
