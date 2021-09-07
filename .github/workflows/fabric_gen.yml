@@ -38,3 +38,15 @@ jobs:
         cd fabric_generator
         ./create_basic_files.sh
         ./run_fab_flow.sh
+        
+  build_nextpnr:
+
+    runs-on: ubuntu-latest
+
+    steps:     
+    - name: make
+      run: |
+        cd nextpnr-fabulous
+        cmake -DARCH=fabulous -DBUILD_GUI=OFF
+        sudo make install
+
