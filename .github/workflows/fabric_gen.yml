@@ -49,6 +49,8 @@ jobs:
         submodules: recursive
     - name: Setup cmake
       uses: jwlawson/actions-setup-cmake@v1.9
+    - name: Install dependencies
+      run: sudo apt-get install libboost-all-dev libeigen3-dev
     - name: make
       run: |
         cd nextpnr-fabulous
