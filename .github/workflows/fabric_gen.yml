@@ -48,7 +48,7 @@ jobs:
       with:
         submodules: recursive
     - name: Install dependencies
-      run: sudo apt-get install libboost-all-dev libeigen3-dev
+      run: sudo apt update && sudo apt-get install libboost-all-dev libeigen3-dev cmake
     - name: make
       run: |
         cd nextpnr-fabulous
