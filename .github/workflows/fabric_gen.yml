@@ -49,11 +49,10 @@ jobs:
         submodules: recursive
     - name: Install dependencies
       run: sudo apt update && sudo apt-get install libboost-all-dev libeigen3-dev cmake
-    - name: Update buildfiles (temporary requirement until version update)    
-      run: cat nextpnr-fabulous/CMakeFiles/nextpnr-fabulous.dir/link.txt
     - name: make
       run: |
         cd nextpnr-fabulous
         cmake -DARCH=fabulous -DBUILD_GUI=OFF
+        cat nextpnr-fabulous/CMakeFiles/nextpnr-fabulous.dir/link.txt
         sudo make install
 
