@@ -25,7 +25,7 @@ The following packages need to be installed for generating fabric HDLs
 The following packages need to be installed for the CAD toolchain
 
 :`Yosys <https://github.com/YosysHQ/yosys>`_:
- version > 0.10
+ version > 0.24
 
 
 .. note:: In the following, :term:`$FAB_ROOT` means the root directory of the Fabulous source code tree.
